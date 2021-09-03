@@ -1,37 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Room } from 'src/app/shared/models/room';
+import { RoomStoreService } from '../services/room-store.service';
 import { RoomService } from '../services/room.service';
 
 @Component({
   selector: 'app-room-list',
   templateUrl: './room-list.component.html',
-  styleUrls: ['./room-list.component.css']
+  styleUrls: ['./room-list.component.css'],
 })
 export class RoomListComponent implements OnInit {
 
-  rooms!: Room[];
+  room!: Room[];
 
-  constructor(private roomService: RoomService, private router: Router) { }
+
+
+  constructor(private router: Router,
+              private roomStoreService: RoomStoreService) { }
 
   ngOnInit(): void {
-    this.roomService.room$.subscribe(room => this.rooms = room )
+    this.roomStoreService.rooms$.subscribe(room => this.room = room )
   }
 
   reloadData(): void {
-    this.roomService.getRoomList();
+    this.roomStoreService.fetchAll();
   }
 
   deleteRoom(id: number): void{
-    this.roomService.deleteRoomById(id).subscribe(
-      data => {
-        console.log(data);
-        this.reloadData;
-      },
-      error => console.log(error));
+    this.roomStoreService.removeRoom(id);
   }
-
 
   roomDetails(id: number){
     this.router.navigate(['details', id]);
@@ -42,3 +40,4 @@ export class RoomListComponent implements OnInit {
   }
 
 }
+

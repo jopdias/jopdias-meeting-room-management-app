@@ -4,5 +4,5 @@ export class Room {
   date!:string
   startHour!: string;
   endHour!: string;
-  active!: boolean;
+  active?: boolean;
 }

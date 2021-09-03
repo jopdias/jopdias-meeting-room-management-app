@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Room } from 'src/app/shared/models/room';
 import { RoomStoreService } from '../services/room-store.service';
@@ -10,9 +10,10 @@ import { RoomStoreService } from '../services/room-store.service';
   styleUrls: ['./create-room.component.css']
 })
 export class CreateRoomComponent implements OnInit {
-  room: Room = new Room();
   submited : boolean = false;
-  formControl = new FormControl('');
+  formRoom!: FormGroup;
+  room = new Room();
+
 
   constructor(private roomStoreService: RoomStoreService,
               private router: Router,
@@ -31,6 +32,7 @@ export class CreateRoomComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
   newRoom(): void{
     this.submited = false;
     this.room = new Room();
@@ -38,8 +40,11 @@ export class CreateRoomComponent implements OnInit {
 
 
   save() {
-
-    this.roomStoreService.addRoom(this.roomForm);
+    this.room.name = new FormControl(this.room.name).value;
+    this.room.date = new FormControl(this.room.date).value;
+    this.room.startHour = new FormControl(this.room.startHour).value;
+    this.room.endHour = new FormControl(this.room.endHour).value;
+    this.roomStoreService.addRoom(this.room);
 
   }
 
