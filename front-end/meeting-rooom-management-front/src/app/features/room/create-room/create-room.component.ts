@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Room } from 'src/app/shared/models/room';
-import { RoomService } from '../services/room.service';
+import { RoomStoreService } from '../services/room-store.service';
 
 @Component({
   selector: 'app-create-room',
@@ -11,8 +12,21 @@ import { RoomService } from '../services/room.service';
 export class CreateRoomComponent implements OnInit {
   room: Room = new Room();
   submited : boolean = false;
+  formControl = new FormControl('');
 
-  constructor(private roomService: RoomService, private router: Router) { }
+  constructor(private roomStoreService: RoomStoreService,
+              private router: Router,
+              private fb: FormBuilder) { }
+
+
+  roomForm = this.fb.group({
+    "name":["", Validators.required],
+    "date":["", Validators.required],
+    "startHour":["", Validators.required],
+    "endHour":["", Validators.required]
+  })
+
+
 
   ngOnInit(): void {
   }
@@ -24,10 +38,9 @@ export class CreateRoomComponent implements OnInit {
 
 
   save() {
-    this.roomService.saveRoom(this.room)
-      .subscribe(data => console.log(data), error => console.log(error));
-    this.room = new Room();
-    this.gotoList();
+
+    this.roomStoreService.addRoom(this.roomForm);
+
   }
 
   onSubmit() {
